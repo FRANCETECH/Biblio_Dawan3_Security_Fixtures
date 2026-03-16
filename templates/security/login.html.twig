@@ -20,9 +20,7 @@
     <label for="inputPassword">Password</label>
     <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
 
-    <input type="hidden" name="_csrf_token"
-           value="{{ csrf_token('authenticate') }}"
-    >
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
     <div class="checkbox mb-3">
         <label>
@@ -35,3 +33,9 @@
     </button>
 </form>
 {% endblock %}
+
+{# 
+    Dans un firewall Symfony, la fonctionnalité remember_me permet à l’utilisateur de rester connecté même après la fermeture de son navigateur, grâce 
+    à un cookie persistant. Quand activée, un cookie est créé après l’authentification, et il sera utilisé pour reconnecter automatiquement l’utilisateur 
+    à sa prochaine visite sans qu’il ait besoin de se reloguer.
+ #}

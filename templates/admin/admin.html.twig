@@ -19,15 +19,43 @@
     <div class="container-fluid">
         <a class="navbar-brand" href="{{ path('admin.livre.index') }}">Administration</a> 
         <div class="collapse navbar-collapse">
-            <ul class="navbar-nav">
+            <ul class="navbar-nav align-items-center">
                 <li class="nav-item"> 
                    
                     <a class="nav-link {{ app.current_route starts with 'admin.livre.' ? 'active' : '' }}" href="{{ path('admin.livre.index') }}">Livres</a> 
                 </li>
-                <li class="nav-item"> 
-                   
+                <li class="nav-item">   
                 <a class="nav-link {{ app.current_route starts with 'admin.category.' ? 'active' : '' }}" href="{{ path('admin.category.index') }}">Categories</a> 
                 </li>
+
+                <li class="nav-item">
+                    <span class="nav-link disabled">|</span>
+                </li>
+
+                {% if not app.user %}
+                    <li class="nav-item">
+                        <a href="{{ path('app_login') }}" class="nav-link">Connexion</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <span class="nav-link disabled">Bonjour {{ app.user.username }}</span>
+                    </li>
+
+                    <li class="nav-item">
+                        <form action="/logout" method="post" class="d-inline">
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+                            <button type="submit" class="btn btn-link nav-link p-0 m-0 border-0" style="background: none;">Déconnexion</button>
+                        </form>
+                    </li>
+
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li class="nav-item">
+                            <a href="{{ path('admin.livre.index') }}" class="nav-link">Admin Livres</a>
+                        </li>
+                    {% endif %}
+                {% endif %}
+
+
             </ul>
         </div>
     </div>

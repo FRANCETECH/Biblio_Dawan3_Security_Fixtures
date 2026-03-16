@@ -11,9 +11,9 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\HttpFoundation\Request;
-use App\Entity\User;
+//use App\Entity\User;
 
-class HomeController extends AbstractController
+class HomeController extends AbstractController 
 {
 
     #[Route('/', name: 'home')]
@@ -31,20 +31,16 @@ class HomeController extends AbstractController
         $em->persist($user);
         $em->flush();
     */
-        return $this->render('home/index.html.twig');
+        return $this->render('home/index.html.twig'); 
     }
 
 
-
-    // Notion de service  // Exemple pour le système de service
-
-    #[Route('/demo')]
-    public function demo(ValidatorInterface $validator) // Ici j'ai injecté un service, ce qui m'a permi de faire un traitement
+    #[Route('/service')]
+    public function service(ValidatorInterface $validator) 
     {
-        //dd($validator);
         $recipe = new Livre();
-        $errors = $validator->validate($recipe);    // Valide moi ma recette
-        dd((string) ($errors));  // Affiche moi les erreurs sous forme de chaines de caractères
+        $errors = $validator->validate($recipe);   
+        dd((string) ($errors));  
     }
 
 

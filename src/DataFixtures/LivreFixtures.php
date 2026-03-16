@@ -10,6 +10,7 @@ use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use App\DataFixtures\UserFixtures;
+use App\Entity\User;
 
 class LivreFixtures extends Fixture implements DependentFixtureInterface
 {
@@ -17,9 +18,9 @@ class LivreFixtures extends Fixture implements DependentFixtureInterface
     {
     }
 
-    public function load(ObjectManager $manager): void
+    public function load(ObjectManager $manager): void  
     {
-        $faker = Factory::create('fr_FR');
+        $faker = Factory::create('fr_FR');  
 
         // Création des catégories de livres
         $categories = ['Science-Fiction', 'Biographie', 'Histoire', 'Fantasy', 'Thriller', 'Roman'];
@@ -33,7 +34,7 @@ class LivreFixtures extends Fixture implements DependentFixtureInterface
             $this->addReference($c, $category);
         }
 
-        // Création de livres fictifs
+         // Création des livres
         for ($i = 1; $i <= 20; $i++) {
             $title = $faker->sentence(3);
             $author = $faker->name;
@@ -42,16 +43,22 @@ class LivreFixtures extends Fixture implements DependentFixtureInterface
                 ->setSlug($this->slugger->slug($title))
                 ->setAuthor($author)
                 ->setPublicationYear($faker->year)
-                ->setCreatedAt(\DateTimeImmutable::createFromMutable($faker->dateTime()))
                 ->setUpdatedAt(\DateTimeImmutable::createFromMutable($faker->dateTime()))
+                ->setCreatedAt(\DateTimeImmutable::createFromMutable($faker->dateTime()))
                 ->setSummary($faker->paragraphs(3, true))
                 ->setPublisher($faker->company)
                 ->setLanguage($faker->languageCode)
                 ->setGenre($faker->randomElement(['Fiction', 'Non-Fiction', 'Mystery', 'Adventure']))
                 ->setEdition($faker->randomElement(['1st', '2nd', 'Revised']))
                 ->setCoverImage($faker->imageUrl(200, 300, 'books'))
-                ->setCategory($this->getReference($faker->randomElement($categories))) // Liaison à une catégorie
-                ->setUser($this->getReference('USER' . $faker->numberBetween(1, 10))); // Liaison à un utilisateur fictif
+                ->setCategory($this->getReference($faker->randomElement($categories), Category::class)); // Liaison à une catégorie
+
+            // Associer les 5 premiers livres à l'admin, les autres à un utilisateur lambda
+            if ($i <= 5) {
+                $livre->setUser($this->getReference(UserFixtures::ADMIN, User::class)); // Liaison à un utilisateur admin
+            } else {
+                $livre->setUser($this->getReference('USER' . $faker->numberBetween(1, 10), User::class)); // Liaison à un utilisateur fictif
+            }
 
             $manager->persist($livre);
         }

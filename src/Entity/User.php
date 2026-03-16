@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity;   
+
 
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -12,7 +13,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', fields: ['username'])]
-#[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
+#[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')] 
+
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -168,12 +170,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeLivre(Livre $livre): static
+    public function removeLivre(Livre $livre): static // Tente de retirer le Livre de la collection. Retourne true si l'élément existait et a été supprimé
     {
         if ($this->livres->removeElement($livre)) {
             // set the owning side to null (unless already changed)
-            if ($livre->getUser() === $this) {
-                $livre->setUser(null);
+            if ($livre->getUser() === $this) { // Vérifie si le Livre pointe encore vers cette entité (relation inverse)
+                $livre->setUser(null); // Si oui, on met la relation inverse à null pour dissocier le Livre
             }
         }
 

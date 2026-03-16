@@ -25,24 +25,29 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
 
     public function __construct(
         private UrlGeneratorInterface $urlGenerator,
-        private UserRepository $userRepository)
+        private UserRepository $userRepository) 
     {
     }
 
-    public function authenticate(Request $request): Passport
+    public function authenticate(Request $request): Passport 
     {
+        
         $username = $request->request->get('username', '');
-
+      
         $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $username);
 
-        return new Passport(
-            new UserBadge($username, fn (string $identifier) => $this->userRepository->findUserByEmailOrUsername($identifier) ), //Modif
-            new PasswordCredentials($request->request->get('password', '')),
+       
+        return new Passport(   
+            new UserBadge($username, fn (string $identifier) => $this->userRepository->findUserByEmailOrUsername($identifier) ),
+            new PasswordCredentials($request->request->get('password', '')), 
+            
             [
-                new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token')),
-                new RememberMeBadge(),
+                new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token')), 
+              
+                new RememberMeBadge(), 
             ]
         );
+       
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
@@ -51,11 +56,13 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
             return new RedirectResponse($targetPath);
         }
 
-        return new RedirectResponse('/');
+        return new RedirectResponse('/'); 
     }
 
+   
     protected function getLoginUrl(Request $request): string
     {
+       
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
     }
 }

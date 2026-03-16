@@ -19,16 +19,17 @@ security:
             custom_authenticator: App\Security\AppAuthenticator
             logout:
                 path: app_logout
+                target: / # redirige l'utilisateur après déconnexion
                 # where to redirect after logout
                 # target: app_any_route
 
             remember_me:
-                secret: '%kernel.secret%'
-                lifetime: 604800
-                path: /
+                secret: '%kernel.secret%'  # Clé secrète utilisée pour sécuriser le contenu du cookie (signature HMAC).
+                lifetime: 604800           # Durée de validité du cookie en secondes (ici : 604800 = 7 jours).
+                path: /                    # Le chemin sur lequel le cookie est valide (ici : toute l'application).
                 # by default, the feature is enabled by checking a checkbox in the
                 # login form, uncomment the following line to always enable it.
-                #always_remember_me: true
+                #always_remember_me: true  # (optionnel) Active le remember_me automatiquement sans checkbox.
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall

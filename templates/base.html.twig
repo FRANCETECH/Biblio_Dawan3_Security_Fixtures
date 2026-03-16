@@ -19,18 +19,47 @@
     <div class="container-fluid">
         <a class="navbar-brand" href="{{ path('home') }}">Biblio Dawan</a> 
         <div class="collapse navbar-collapse">
-            <ul class="navbar-nav">
-                <li class="nav-item"> 
-                 {# la variable app est un objet global disponible dans tous les templates Twig. Elle contient plusieurs propriétés et méthodes qui permettent de manipuler et d'accéder 
-                 à différentes données au sein du template. Il permet d'accéder à certaines informations et services liés à l'application.#}
-                    <a class="nav-link {{ app.current_route == 'home' ? 'active' : '' }}" href="{{ path('home') }}">Accueil</a> 
+        
+            <ul class="navbar-nav d-flex align-items-center">
+
+                <li class="nav-item">
+                    <a class="nav-link {{ app.current_route == 'home' ? 'active' : '' }}" href="{{ path('home') }}">Accueil</a>
                 </li>
-                <li class="nav-item"> 
-                 {#starts with 'livre.' : Cette condition vérifie si la route actuelle(par exemple:livre.index, livre.show, etc.) commence par le préfixe 'livre.' ? 'active' : '' #}
-                 {# : Cela équivaut à une condition ternaire. Si la condition précédente (starts with 'livre.') est vraie, alors la classe CSS 'active' est ajoutée à l'élément  #}
-                    <a class="nav-link {{ app.current_route starts with 'livre.' ? 'active' : '' }}" href="{{ path('admin.livre.index') }}">Livres</a> 
+
+                <li class="nav-item">
+                    <a class="nav-link {{ app.current_route starts with 'livre.' ? 'active' : '' }}" href="{{ path('admin.livre.index') }}">Livres</a>
                 </li>
+              
+                <li class="nav-item">
+                    <span class="nav-link disabled">|</span>
+                </li>
+
+                {% if not app.user %}
+                    <li class="nav-item">
+                        <a href="{{ path('app_login') }}" class="nav-link">Connexion</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <span class="nav-link disabled">Bonjour {{ app.user.username }}</span>
+                    </li>
+
+                    <li class="nav-item">
+                        <form action="/logout" method="post" class="d-inline">
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+                            <button type="submit" class="btn btn-link nav-link p-0 m-0 border-0" style="background: none;">Déconnexion</button>
+                        </form>
+                    </li>
+
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li class="nav-item">
+                            <a href="{{ path('admin.livre.index') }}" class="nav-link">Admin Livres</a>
+                        </li>
+                    {% endif %}
+                {% endif %}
+              
             </ul>
+
+            	
         </div>
     </div>
 </nav>
@@ -42,4 +71,4 @@
 </body>
 </html>
 
-{# https://chatgpt.com/c/66ef0745-154c-800a-a4e8-d2ff24a8ffeb #}
+
